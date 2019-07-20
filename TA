@@ -1,0 +1,108 @@
+#include <iostream>
+#include <string.h>
+#include <time.h>
+#include <ctime>
+#include <random>
+#include <stdlib.h>
+#include <windows.h>
+using namespace std;
+int heightofac=1500;
+int feetpersecond=4000;
+
+bool terrain_approaching(int radarreading,int aircraftheight,int barometerreading){
+    bool test=false;
+    if((radarreading != 0) )
+   {
+   int testBaro=aircraftheight - radarreading;
+        if(testBaro  <= barometerreading)
+        {
+          test=true;
+        }
+    }
+    return test;
+}
+
+void type1(){
+
+    std::uniform_int_distribution<int> distribution(0,4000);
+    std::default_random_engine generator;
+    int radarscale=0;
+    int barovalueinz=feetpersecond;
+    int baroactual=distribution(generator);
+    int barometerdiff =0;
+    double truedescentrate = (barometerdiff /1);
+    int temps(0);
+    while(temps <= 60){
+        if(temps != (clock()/CLOCKS_PER_SEC)){
+            temps++;
+          radarscale=distribution(generator);
+            barovalueinz = baroactual;
+            baroactual=distribution(generator);
+            heightofac+=(terrain_approaching(radarscale,baroactual,heightofac) != false)?radarscale:0;
+            cout<<"Time duration " << temps<<endl;
+            if(terrain_approaching(radarscale,baroactual,heightofac) != false)
+            {
+                HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                int k=1;
+                while(k <=15){
+                    SetConsoleTextAttribute(hConsole, k);
+                   if (k==1)
+                       cout<<"Radarvalue : "<<radarscale <<" Feet "<< "  terrain approach "<<endl;
+                    k++;
+                }
+            }else{
+                HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                int k=1;
+             while(k <=15){
+                    SetConsoleTextAttribute(hConsole, k);
+                   if (k==1)
+                       cout<<"Radarvalue: "<<radarscale <<" Feet "<< " Clear"<<endl;
+                    k++;
+                }
+            }
+        barometerdiff = baroactual - barovalueinz;
+            barometerdiff=(barometerdiff < 0)?-1*barometerdiff:barometerdiff;
+
+        truedescentrate = barometerdiff /1;
+
+            if((baroactual < heightofac) && (truedescentrate < (feetpersecond / 60) ))
+                {
+                    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                    int k=1;
+                    while(k <=15){
+                        SetConsoleTextAttribute(hConsole, k);
+                       if (k==1)
+                           cout<<"BarometerReading : "<<baroactual <<" Feet "<<" DescentRate : "<<truedescentrate<<" Feetpersecond" << " Sink Rate "<<endl;
+                        k++;
+                    }
+            }else{
+                    if((baroactual > heightofac) && (truedescentrate > (feetpersecond / 60) ))
+                    {
+                        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                        int k=1;
+                        while(k <=15){
+                            SetConsoleTextAttribute(hConsole, k);
+                           if (k==1)
+                               cout<<"BarometerReading : "<<baroactual <<" Feet "<<" DescentRate : "<<truedescentrate <<" Feetpersecond"<< "  Pull Up"<<endl;
+                            k++;
+                        }
+                    }else{
+                        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+                        int k=1;
+                        while(k <=11){
+                            SetConsoleTextAttribute(hConsole, k);
+                           if (k==1)
+                               cout<<"BarometerReading : "<<baroactual <<" Feet " <<" DescentRate : "<<truedescentrate <<" Feetpersecond" << "  Stable"<<endl;
+                            k++;
+                        }
+                    }
+            }
+
+            }
+    }
+}
+int main()
+{
+    type1();
+    return 0;
+}
